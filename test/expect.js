@@ -204,6 +204,12 @@ describe('expect', function () {
     err(function () {
       expect({}).to.be.an('array');
     }, 'expected {} to be an array');
+
+    function f() {}
+    
+    err(function () {
+      expect(f).to.be.an('array');
+    }, 'expected [Function: f] to be an array');
   });
 
   it('should test regex', function () {
@@ -221,6 +227,27 @@ describe('expect', function () {
     err(function () {
       expect(null).to.be.an('object');
     }, 'expected null to be an object');
+
+    function f() {}
+
+    err(function () {
+      expect(f).to.be.an('object');
+    }, 'expected [Function: f] to be an object');
+  });
+
+  it('should test arrays', function () {
+    function f() {}
+
+    expect(f).to.be.a('function');
+    expect(f).to.be.an('function');
+
+    err(function () {
+      expect({}).to.be.a('function');
+    }, 'expected {} to be a function');
+
+    err(function () {
+      expect([]).to.be.a('function');
+    }, 'expected [] to be a function');
   });
 
   it('should test .equal()', function () {
