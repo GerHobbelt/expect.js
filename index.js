@@ -100,8 +100,8 @@
         err.showDiff = true;
       }
 
-      if ( global.mocha ) {
-        mocha.throwError(err);
+      if ( global.mocha && typeof global.mocha.throwError === 'function' ) {
+        global.mocha.throwError(err);
       } else {
         throw err;
       }
