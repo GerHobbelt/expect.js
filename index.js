@@ -99,12 +99,7 @@
         err.expected = expected;
         err.showDiff = true;
       }
-
-      if ( global.mocha && typeof global.mocha.throwError === 'function' ) {
-        global.mocha.throwError(err);
-      } else {
-        throw err;
-      }
+      throw err;
     }
 
     this.and = new Assertion(this.obj);
