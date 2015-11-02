@@ -22,6 +22,7 @@
   var flags = {
       not: ['to', 'be', 'have', 'include', 'only']
     , to: ['be', 'have', 'include', 'only', 'not']
+    , has : ['own']
     , only: ['have']
     , have: ['own']
     , be: ['an']
@@ -359,6 +360,9 @@
    */
 
   Assertion.prototype.property = function (name, val) {
+    // make a new object so the tester can test the new object too
+    this.which = expect(this.obj[name]);
+
     if (this.flags.own) {
       this.assert(
           Object.prototype.hasOwnProperty.call(this.obj, name)
