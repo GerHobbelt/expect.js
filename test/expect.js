@@ -786,6 +786,8 @@ describe('expect', function () {
     err(function () {
         expect().fail();
     }, "explicit failure");
+
+    expect().not.to.fail();
   });
 
   it('should fail with `fail` and custom message', function () {
