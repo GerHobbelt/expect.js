@@ -64,7 +64,7 @@
           , assertion = new Assertion(this.obj, name, this)
 
         if ('function' == typeof Assertion.prototype[name]) {
-          // clone the function, make sure we dont touch the prot reference
+          // clone the function, make sure we don't touch the prot reference
           var old = this[name];
           this[name] = function () {
             return old.apply(self, arguments);
@@ -117,6 +117,7 @@
         !!this.obj
       , function(){ return 'expected ' + i(this.obj) + ' to be truthy' }
       , function(){ return 'expected ' + i(this.obj) + ' to be falsy' });
+    return this;
   };
 
   /**
@@ -174,6 +175,7 @@
         thrown
       , function(){ return 'expected ' + name + ' to throw an exception' }
       , function(){ return 'expected ' + name + ' not to throw an exception' });
+    return this;
   };
 
   /**
@@ -207,6 +209,63 @@
     return this;
   };
 
+
+  /**
+   * Checks if a number is finite, i.e. not a NaN or +/-Infinity.
+   *
+   * @api public
+   */
+
+  Assertion.prototype.finite = function () {
+    if ('number' !== typeof this.obj) {
+      this.flags.not = false;
+      this.assert(false, function(){ return 'expected ' + i(this.obj) + ' to be a number' });
+    }
+    this.assert(
+        isFinite(this.obj)
+      , function(){ return 'expected ' + i(this.obj) + ' to be a finite number' }
+      , function(){ return 'expected ' + i(this.obj) + ' to not be a finite number' });
+    return this;
+  };
+
+
+  /**
+   * Checks if a number is infinite, i.e. not a NaN or finite.
+   *
+   * @api public
+   */
+
+  Assertion.prototype.infinite = function () {
+    if ('number' !== typeof this.obj) {
+      this.flags.not = false;
+      this.assert(false, function(){ return 'expected ' + i(this.obj) + ' to be a number' });
+    }
+    this.assert(
+        this.obj === +Infinity || this.obj === -Infinity
+      , function(){ return 'expected ' + i(this.obj) + ' to be an infinite number' }
+      , function(){ return 'expected ' + i(this.obj) + ' to not be an infinite number' });
+    return this;
+  };
+
+
+  /**
+   * Checks if a number is NaN.
+   *
+   * @api public
+   */
+
+  Assertion.prototype.nan = function () {
+    if ('number' !== typeof this.obj) {
+      this.flags.not = false;
+      this.assert(false, function(){ return 'expected ' + i(this.obj) + ' to be a number' });
+    }
+    this.assert(
+        isNaN(this.obj)
+      , function(){ return 'expected ' + i(this.obj) + ' to be NaN' }
+      , function(){ return 'expected ' + i(this.obj) + ' to not be NaN' });
+    return this;
+  };
+
   /**
    * Checks if the obj exactly equals another.
    *
@@ -232,10 +291,21 @@
   Assertion.prototype.approximately =
   Assertion.prototype.approximate =
   Assertion.prototype.about = function (obj, precision) {
+    if (typeof obj !== 'number') {
+      this.flags.not = false;
+      this.assert(false, function(){ return 'expected reference value ' + i(obj) + ' to be a number' });
+    }
+    if (!isFinite(obj)) {
+      this.flags.not = false;
+      this.assert(false, function(){ return 'expected reference value ' + i(obj) + ' to be a finite number' });
+    }
+    expect(this.obj).to.be.a('number').and.finite();
     if (precision == null) precision = 2;
     var diff = Math.pow(10, -precision) / 2;
+    var delta = obj - this.obj;
+    // Infinity - Infinity = NaN:
     this.assert(
-      Math.abs(obj - this.obj) < diff
+      !isNaN(delta) && Math.abs(delta) < diff
       , function(){ return 'expected ' + i(this.obj) + ' to be near ' + i(obj) }
       , function(){ return 'expected ' + i(this.obj) + ' to not be near ' + i(obj) });
     return this;

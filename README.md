@@ -69,6 +69,41 @@ expect({ a: 'b' }).to.eql({ a: 'b' });
 expect(1).to.eql('1');
 ```
 
+**near** / **approximately** / **approximate** / **about** : asserts approximate numeric equality
+
+Default precision is 2, i.e. 'nearness' of both values within 0.005 (0.5 * 10^-2).
+
+```js
+expect(1.01).not.to.be.near(1);
+expect(1.005).to.be.near(1);
+expect(0.5).to.be.near(1, 0);     // within 0.5*10^0 ~ within 0.5
+```
+
+
+**finite** : asserts that the given *number* is *finite*, i.e. neither NaN nor +/- Infinity
+
+```js
+expect(1.01).to.be.finite();
+expect('1').not.to.be.finite();
+```
+
+
+**infinite** : asserts that the given *number* is infinite: +Infinity or -Infinity
+
+```js
+expect(1.01).not.to.be.infinite();
+```
+
+
+**nan** : asserts that the given *number* is a NaN: not-a-number.
+
+Note the all-lowercase name of this test: this way of writing `NaN` is required as `NaN` is a reserved word in JavaScript.
+
+```js
+expect(0 / 0).to.be.nan();
+```
+
+
 **a**/**an**: asserts `typeof` with support for `array` type and `instanceof`
 
 ```js

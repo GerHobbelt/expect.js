@@ -373,6 +373,183 @@ describe('expect', function () {
     }, "expected '4' to equal 4");
   });
 
+  it('should test finite(val)', function () {
+    // this is numerical comparison and non-numeric strings 
+    // must fail the test due to ending up being interpreted as NaN
+    err(function () {
+      expect('test').not.to.be.finite();
+    }, "expected 'test' to be a number");
+
+    err(function () {
+      expect('0').to.be.finite();
+    }, "expected '0' to be a number");
+    err(function () {
+      expect('0').not.to.be.finite();
+    }, "expected '0' to be a number");
+
+    expect(1).to.be.finite();
+    expect(-1e38).to.be.finite();
+    expect(1e250).to.be.finite();
+
+    expect(NaN).not.to.be.finite();
+    expect(Infinity).not.to.be.finite();
+    expect(-Infinity).not.to.be.finite();
+
+    err(function () {
+      expect(NaN).to.be.finite();
+    }, "expected NaN to be a finite number");
+    err(function () {
+      expect(Infinity).to.be.finite();
+    }, "expected Infinity to be a finite number");
+    err(function () {
+      expect(-Infinity).to.be.finite();
+    }, "expected -Infinity to be a finite number");
+    err(function () {
+      expect(7).not.to.be.finite();
+    }, "expected 7 to not be a finite number");
+  });
+
+  it('should test infinite(val)', function () {
+    // this is numerical comparison and non-numeric strings 
+    // must fail the test due to ending up being interpreted as NaN
+    err(function () {
+      expect('test').not.to.be.infinite();
+    }, "expected 'test' to be a number");
+
+    err(function () {
+      expect('0').not.to.be.infinite();
+    }, "expected '0' to be a number");
+    err(function () {
+      expect('0').to.be.infinite();
+    }, "expected '0' to be a number");
+
+    expect(Infinity).to.be.infinite();
+    expect(-Infinity).to.be.infinite();
+    expect(1 / 0).to.be.infinite();
+    expect(-1 / 0).to.be.infinite();
+
+    expect(1).not.to.be.infinite();
+    expect(-1e38).not.to.be.infinite();
+    expect(1e250).not.to.be.infinite();
+    expect(NaN).not.to.be.infinite();
+
+    err(function () {
+      expect(NaN).to.be.infinite();
+    }, "expected NaN to be an infinite number");
+    err(function () {
+      expect(1).to.be.infinite();
+    }, "expected 1 to be an infinite number");
+    err(function () {
+      expect(-Infinity).not.to.be.infinite();
+    }, "expected -Infinity to not be an infinite number");
+  });
+
+  it('should test nan(val)', function () {
+    // this is numerical comparison and non-numeric strings 
+    // must fail the test due to ending up being interpreted as NaN
+    err(function () {
+      expect('test').not.to.be.infinite();
+    }, "expected 'test' to be a number");
+
+    err(function () {
+      expect('0').not.to.be.infinite();
+    }, "expected '0' to be a number");
+    err(function () {
+      expect('0').to.be.infinite();
+    }, "expected '0' to be a number");
+
+    expect(NaN).to.be.nan();
+    expect(0 / 0).to.be.nan();
+
+    expect(Infinity).not.to.be.nan();
+    expect(-Infinity).not.to.be.nan();
+    expect(1).not.to.be.nan();
+    expect(-1e38).not.to.be.nan();
+    expect(1e250).not.to.be.nan();
+
+    err(function () {
+      expect(NaN).not.to.be.nan();
+    }, "expected NaN to not be NaN");
+    err(function () {
+      expect(1).to.be.nan();
+    }, "expected 1 to be NaN");
+    err(function () {
+      expect(-Infinity).to.be.nan();
+    }, "expected -Infinity to be NaN");
+  });
+
+  it('should test be(val)', function () {
+    expect('test').to.be('test');
+    expect(1).to.be(1);
+
+    err(function () {
+      expect(4).to.be(3);
+    }, 'expected 4 to equal 3');
+
+    err(function () {
+      expect('4').to.be(4);
+    }, "expected '4' to equal 4");
+  });
+
+  it('should test approximate(val)', function () {
+    // this is numerical comparison and non-numeric strings 
+    // must fail the test due to ending up being interpreted as NaN
+    err(function () {
+      expect('test').not.to.be.near(0);
+    }, "expected 'test' to be a number");
+    err(function () {
+      expect(0).not.to.be.near('test');
+    }, "expected reference value 'test' to be a number");
+    err(function () {
+      expect('blub').not.to.be.near('test');
+    }, "expected reference value 'test' to be a number");
+
+    expect(1).to.be.near(1);
+    expect(1.01).not.to.be.near(1);
+    expect(1.005).to.be.near(1);
+
+    // within 0.5*10^0 ~ within 0.5
+    expect(0.5000001).to.be.near(1, 0);     
+    expect(0.4900001).not.to.be.near(1, 0);
+    expect(1.5000001).not.to.be.near(1, 0);     
+    expect(1.4900001).to.be.near(1, 0);
+
+    expect(-0.5000001).to.be.near(-1, 0);     
+    expect(-0.4900001).not.to.be.near(-1, 0);
+    expect(-1.5000001).not.to.be.near(-1, 0);     
+    expect(-1.4900001).to.be.near(-1, 0);
+
+    err(function () {
+      expect(NaN).not.to.be.near(NaN);
+    }, "expected reference value NaN to be a finite number");
+    err(function () {
+      expect(Infinity).not.to.be.near(Infinity);
+    }, "expected reference value Infinity to be a finite number");
+    err(function () {
+      expect(-Infinity).not.to.be.near(+Infinity);
+    }, "expected reference value Infinity to be a finite number");
+    err(function () {
+      expect(-Infinity).not.to.be.near(-Infinity);
+    }, "expected reference value -Infinity to be a finite number");
+    err(function () {
+      expect(Infinity).not.to.be.near(NaN);
+    }, "expected reference value NaN to be a finite number");
+    err(function () {
+      expect(NaN).not.to.be.near(0);
+    }, "expected NaN to be a finite number");
+    err(function () {
+      expect(Infinity).not.to.be.near(0);
+    }, "expected Infinity to be a finite number");
+
+    err(function () {
+      expect(4).to.be.near(3);
+    }, 'expected 4 to be near 3');
+
+    err(function () {
+      expect('4').to.be.near(4);
+    }, "expected '4' to be a number");
+  });
+
   it('should test be(val)', function () {
     expect('test').to.be('test');
     expect(1).to.be(1);
